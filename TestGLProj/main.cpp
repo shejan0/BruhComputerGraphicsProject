@@ -10,6 +10,7 @@
 
 #include "Model.h"
 #include "GObject.h"
+#include "Scene.h" //Scene>GObject>Model>Shader all defined in recursion
 #include "Shader.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,15 +19,17 @@
 glm::vec3 move(0.0f,0.0f, 15.0f);
 glm::vec3 center(0.0f,0.0f,0.0f);
 Shader shader; // loads our vertex and fragment shaders
-Model *cylinder; //a cylinder 
-Model *plane; //a plane
-Model *sphere; //a sphere
-Model *cube; //a cube
-glm::mat4 projection; // projection matrix
-glm::mat4 view; // where the camera is looking
+Model* cylinder; //a cylinder 
+Model* plane; //a plane
+Model* sphere; //a sphere
+Model* cube; //a cube
 glm::mat4 sphereTrans; // where the model is located wrt the camera
 glm::mat4 cubeTrans; // where the model is located wrt the camera
 glm::mat4 cylinderTrans; // where the model is located wrt the camera
+glm::mat4 view; // where the camera is looking
+glm::mat4 projection; // projection matrix
+Scene scene;
+
 float angle = 0;
 /* report GL errors, if any, to stderr */
 void checkError(const char *functionName)
@@ -86,15 +89,16 @@ void display(void)
 	view = glm::lookAt(move, center, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	rotation += 0.1f; // Update rotation angle if rotation is enabled.
+	//scene.draw(view, glm::mat4());
 	
 	cylinderTrans = /*glm::rotate(rotation, 0.0f, 0.0f, 1.0f)*/glm::translate(0.0f, 0.0f, 0.0f);/*glm::translate(-2.0f,1.0f,-6.0f) */glm::scale(1.0, 1.0, 1.0); // rotates the model by the current rotation angle.
 
-	cylinder->render(view * cylinderTrans, projection); // Render the cylinder
+	//cylinder->render(view * cylinderTrans, projection); // Render the cylinder
 
 	sphereTrans = cylinderTrans*glm::rotate(0.0f, 0.0f, 0.0f, 1.0f)* glm::translate(0.0f, 2.2f, 0.0f);
-	sphere->render(view * sphereTrans, projection); // Render the cube in another spot
+	//sphere->render(view * sphereTrans, projection); // Render the cube in another spot
 
-/*	cubeTrans = sphereTrans * glm::translate(2.0f,0.0f,0.0f) * glm::rotate(rotation*2.0f,1.0f,0.0f,0.0f); 
+	cubeTrans = sphereTrans * glm::translate(2.0f,0.0f,0.0f) * glm::rotate(rotation*2.0f,1.0f,0.0f,0.0f); 
 	cube->render(view * cubeTrans, projection); // Render the cube in another spot*/
 	
 	glutSwapBuffers(); // Swap the buffers.
@@ -184,7 +188,10 @@ int main(int argc, char** argv)
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc (keyboard);
 	glEnable(GL_DEPTH_TEST);
-
+	
+	
+	
+	
 	cylinder = new Model(&shader, "models/cylinder.obj");
 	plane = new Model(&shader, "models/plane.obj");
 	sphere = new Model(&shader, "models/sphere.obj");
