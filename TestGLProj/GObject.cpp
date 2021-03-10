@@ -1,28 +1,32 @@
 #include "GObject.h"
-#include <glm/glm.hpp>
+/*#include <glm/glm.hpp>
 #include <glm/gtx/transform2.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+*/
 
 
 
-GObject::GObject(float trans[3]) {
+/*GObject::GObject(float trans[3]) {
 	glm::mat4 projection = glm::translate(trans[0], trans[1], trans[2]);
 	GObject::GObject(projection);
-}
+}*/
 
-GObject::GObject(float trans[3], float rotat[3], float scale[3]) {
+/*GObject::GObject(float trans[3], float rotat[3], float scale[3]) {
 	glm::mat4 projection = glm::scale(scale[0], scale[1], scale[2]) * glm::rotate(rotat[0], 1.0f, 0.0f, 0.0f)* glm::rotate(rotat[1], 0.0f, 1.0f, 0.0f)* glm::rotate(rotat[2], 0.0f, 0.0f, 1.0f) *glm::translate(trans[0], trans[1], trans[2]);
 	GObject::GObject(projection);
-}
+}*/
 
 GObject::GObject(glm::mat4 projection, Model* m) {
 	children = std::vector<GObject *>();
 	localProjection = projection;
 	bruh = m;
+	fprintf(stderr, "%p Model m at GOObject: %p %p\n",this,m,bruh);
 }
-
+/*GObject::GObject(Model* m) {
+	GObject::GObject(glm::mat4(), m);
+}*/
 /*GObject* GObject::createChild() { 
 	GObject *b = new GObject(); //check if this gets destroyed during stack removal
 	children.push_back(b);
@@ -55,11 +59,22 @@ GObject* GObject::addModel(Model* model) {
 	bruh = model;
 	return this;
 }
+glm::mat4 GObject::updateModelView(glm::mat4 localView) {
+	return updateLocalProjection(localView);
+}
+glm::mat4 GObject::updateLocalProjection(glm::mat4 projection) {
+	localProjection = projection;
+	return localProjection;
+}
 void GObject::draw(glm::mat4 modelView,glm::mat4 worldProjection) {
+	fprintf(stderr, "%p is rendering %p\n", this,bruh);
 	if (bruh != NULL) {
 		bruh->render(modelView, localProjection * worldProjection);
 	}
-	for (int n = 0; n < children.size(); n++) {
-		children[n]->draw(modelView, worldProjection);
+	if (children.size() > 0) {
+		for (int n = 0; n < children.size(); n++) {
+			children[n]->draw(modelView, worldProjection);
+		}
 	}
 }
+	
