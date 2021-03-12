@@ -28,7 +28,7 @@ public:
 	GLuint operator[](std::string attribute);
 
 	int GetProgramID();
-
+	bool isInitialized();
 	void Activate();
 	void DeActivate();
 
@@ -39,7 +39,7 @@ private:
 private:
 	int m_vertex;
 	int m_fragment;
-	int m_program;
+	int m_program=-1;
 	std::map<std::string, GLuint> m_attributeList;
 };
 

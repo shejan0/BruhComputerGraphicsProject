@@ -23,7 +23,8 @@ Model* cylinder; //a cylinder
 Model* plane; //a plane
 Model* sphere; //a sphere
 Model* cube; //a cube
-GObject * cylOb, *planOb, *sphOb, *cubOb;
+Model* obamium;
+GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam;
 glm::mat4 sphereTrans; // where the model is located wrt the camera
 glm::mat4 cubeTrans; // where the model is located wrt the camera
 glm::mat4 cylinderTrans; // where the model is located wrt the camera
@@ -93,20 +94,22 @@ void display(void)
 	rotation += 0.1f; // Update rotation angle if rotation is enabled.
 	
 	
-	cylinderTrans = /*glm::rotate(rotation, 0.0f, 0.0f, 1.0f)*/glm::translate(0.0f, 0.0f, 0.0f);/*glm::translate(-2.0f,1.0f,-6.0f) */glm::scale(1.0, 1.0, 1.0); // rotates the model by the current rotation angle.
-	cylOb->updateModelView(cylinderTrans);
+	//cylinderTrans = glm::translate(0.0f, 0.0f, 0.0f);glm::scale(1.0, 1.0, 1.0); // rotates the model by the current rotation angle.
 	//cylinder->render(view * cylinderTrans, projection); // Render the cylinder
-
-	sphereTrans = cylinderTrans*glm::rotate(0.0f, 0.0f, 0.0f, 1.0f)* glm::translate(0.0f, 2.2f, 0.0f);
+	
+	//sphereTrans = cylinderTrans*glm::rotate(0.0f, 0.0f, 0.0f, 1.0f)* glm::translate(0.0f, 2.2f, 0.0f);
 	//sphere->render(view * sphereTrans, projection); // Render the cube in another spot
-	sphOb->updateModelView(sphereTrans);
-	cubeTrans = sphereTrans * glm::translate(2.0f,0.0f,0.0f) * glm::rotate(rotation*2.0f,1.0f,0.0f,0.0f); 
+
+	//cubeTrans = sphereTrans * glm::translate(2.0f,0.0f,0.0f) * glm::rotate(rotation*2.0f,1.0f,0.0f,0.0f); 
 	//cube->render(view * cubeTrans, projection); // Render the cube in another spot*/
-	cubOb->updateModelView(cubeTrans);
-	planeTrans = glm::translate(0.0f, 1.5f, 0.0f);
+	cubOb->setRotation(glm::vec3(rotation * 2.0f, 0.0f, 0.0f));
+	Obam->setRotation(glm::vec3(0.0f, rotation * 2.0f, 0.0f));
+	//planeTrans = glm::translate(0.0f, 1.5f, 0.0f);
 	//plane->render(view * planeTrans, projection);
-	planOb->updateModelView(planeTrans);
-	scene.draw(view, glm::mat4());
+	//planOb->updateModelView(planeTrans);
+
+	scene.draw(projection, view);
+
 	glutSwapBuffers(); // Swap the buffers.
 	checkError ("display");
 }
@@ -175,6 +178,10 @@ void keyboard(unsigned char key, int x, int y)
 		// turn right
 		center = center + x1*-.5f;
 		break;
+	
+	case 'b':
+		scene.changeBoxState();
+		break;
 	}
 }
 
@@ -203,16 +210,29 @@ int main(int argc, char** argv)
 	plane = new Model(&shader, "models/plane.obj");
 	sphere = new Model(&shader, "models/sphere.obj");
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
-	fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
+	obamium = new Model(&shader, "models/obamium.obj");
+	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
 	cylOb = new GObject(cylinder);
 	planOb = new GObject(plane);
 	sphOb = new GObject(sphere);
 	cubOb = new GObject(cube);
-	fprintf(stderr, "GObject: Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylOb, planOb, sphOb, cubOb);
+	Obam = new GObject(obamium);
+	//fprintf(stderr, "GObject: Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylOb, planOb, sphOb, cubOb);
 	scene.addChild(cylOb);
+	cylOb->addChild(sphOb);
+	sphOb->addChild(cubOb);
 	scene.addChild(planOb);
-	scene.addChild(sphOb);
-	scene.addChild(cubOb);
+	sphOb->addChild(Obam);
+	cylOb->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	cylOb->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+	sphOb->setPosition(glm::vec3(0.0, 2.2f, 0.0f));
+	sphOb->setRotation(glm::vec3(0.0f, 0.0f, 1.0f));
+	cubOb->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+	Obam->setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+	planOb->setPosition(glm::vec3(0.0f, 1.5f, 0.0f));
+	//scene.addChild(planOb);
+	//scene.addChild(sphOb);
+	//scene.addChild(cubOb);
 	glutMainLoop();
 
 	return 0;

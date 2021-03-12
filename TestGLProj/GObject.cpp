@@ -1,37 +1,24 @@
 #include "GObject.h"
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 /*#include <glm/glm.hpp>
 #include <glm/gtx/transform2.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 */
-
-
-
-/*GObject::GObject(float trans[3]) {
-	glm::mat4 projection = glm::translate(trans[0], trans[1], trans[2]);
-	GObject::GObject(projection);
-}*/
-
-/*GObject::GObject(float trans[3], float rotat[3], float scale[3]) {
-	glm::mat4 projection = glm::scale(scale[0], scale[1], scale[2]) * glm::rotate(rotat[0], 1.0f, 0.0f, 0.0f)* glm::rotate(rotat[1], 0.0f, 1.0f, 0.0f)* glm::rotate(rotat[2], 0.0f, 0.0f, 1.0f) *glm::translate(trans[0], trans[1], trans[2]);
-	GObject::GObject(projection);
-}*/
-
-GObject::GObject(glm::mat4 projection, Model* m) {
+Shader GObject::green;
+GObject::GObject(glm::vec3 trans, glm::vec3 rotat, glm::vec3 scale, Model* m) {
 	children = std::vector<GObject *>();
-	localProjection = projection;
-	bruh = m;
-	fprintf(stderr, "%p Model m at GOObject: %p %p\n",this,m,bruh);
+	model = m;
+	position = trans;
+	rotation = rotat;
+	scales = scale;
+	
+	
+	//fprintf(stderr, "%p Model m at GOObject: %p %p\n",this,m,model);
 }
-/*GObject::GObject(Model* m) {
-	GObject::GObject(glm::mat4(), m);
-}*/
-/*GObject* GObject::createChild() { 
-	GObject *b = new GObject(); //check if this gets destroyed during stack removal
-	children.push_back(b);
-	return b;
-}*/
+
 
 GObject* GObject::removeChild(GObject* child) {
 	GObject* d;
@@ -55,25 +42,91 @@ GObject::~GObject() { //destroy all of the Object and all children
 void GObject::addChild(GObject* newChild) {
 	children.push_back(newChild);
 }
-GObject* GObject::addModel(Model* model) {
-	bruh = model;
+GObject* GObject::setModel(Model* mod) {
+	model = mod;
+	if (model != NULL) {
+		createBoxState();
+	}
 	return this;
 }
-glm::mat4 GObject::updateModelView(glm::mat4 localView) {
+glm::vec3 GObject::setPosition(glm::vec3 pos) {
+	position = pos;
+	return position;
+}
+glm::vec3 GObject::setRotation(glm::vec3 rot) {
+	rotation = rot;
+	return rotation;
+}
+glm::vec3 GObject::setScale(glm::vec3 scal) {
+	scales = scal;
+	return scales;
+}
+glm::vec3 GObject::getPosition() {
+	return position;
+}
+glm::vec3 GObject::getRotation() {
+	return rotation;
+}
+glm::vec3 GObject::getScale() {
+	return scales; 
+}
+void GObject::createBoxState() {
+	if (box != NULL) {
+		delete box;
+	}
+	if (model != NULL) {
+	box = new BoundingBox(&GObject::green, model);
+	}
+	
+}
+/*glm::mat4 GObject::updateModelView(glm::mat4 localView) {
 	return updateLocalProjection(localView);
 }
 glm::mat4 GObject::updateLocalProjection(glm::mat4 projection) {
 	localProjection = projection;
 	return localProjection;
+}*/
+void GObject::changeBoxState() {
+	boxOn = !boxOn;
+	if (!GObject::green.isInitialized()) {
+		GObject::green.InitializeFromFile(GREEN_VERT, GREEN_FRAG);
+	}
+	if (box == NULL) {
+		createBoxState();
+	}
+	for (int n = 0; n < children.size(); n++) {
+		children[n]->changeBoxState();
+	}
 }
-void GObject::draw(glm::mat4 modelView,glm::mat4 worldProjection) {
-	fprintf(stderr, "%p is rendering %p\n", this,bruh);
-	if (bruh != NULL) {
-		bruh->render(modelView, localProjection * worldProjection);
+glm::vec3 GObject::translate(glm::vec3 moveby) {
+	position += moveby;
+	return position;
+}
+
+glm::vec3 GObject::rotate(glm::vec3 rotateby) {
+	rotation += rotateby;
+	return rotation;
+}
+glm::vec3 GObject::scale(glm::vec3 scaleby) {
+	scales += scaleby;
+	return scales;
+}
+void GObject::draw(glm::mat4 worldProjection,glm::mat4 transform) {
+	//fprintf(stderr, "%p is rendering %p\n", this,model);
+	
+	glm::mat4 transforml = transform * glm::translate(position)*glm::rotate(rotation[0],1.0f,0.0f,0.0f)*glm::rotate(rotation[1],0.0f,1.0f,0.0f)* glm::rotate(rotation[2], 0.0f, 0.0f, 1.0f)*glm::scale(scales);
+	//std::cerr << glm::to_string(glm::scale(scales)) << std::endl;
+	if (model != NULL) {
+		model->render(transforml, worldProjection);
+	}
+	if (boxOn) {
+		if (box != NULL) {
+			box->render(transforml, worldProjection);
+		}
 	}
 	if (children.size() > 0) {
-		for (int n = 0; n < children.size(); n++) {
-			children[n]->draw(modelView, worldProjection);
+		for (size_t n = 0; n < children.size(); n++) {
+			children[n]->draw(worldProjection, transforml);
 		}
 	}
 }

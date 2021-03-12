@@ -1,11 +1,11 @@
 #include "Model.h"
 
 
-Model::Model(Shader *shader,  const char* filename, const char * materialPath)
+Model::Model(Shader* shader, const char* filename, const char* materialPath)
 {
 	m_shader = shader;
-	tinyobj::LoadObj(shapes,filename, materialPath);
-	for(int i = 0; i<shapes.size(); i++){
+	tinyobj::LoadObj(shapes, filename, materialPath);
+	for (int i = 0; i < shapes.size(); i++) {
 		m_VBO.push_back(0);
 		m_NBO.push_back(0);
 		m_IBO.push_back(0);
@@ -13,12 +13,23 @@ Model::Model(Shader *shader,  const char* filename, const char * materialPath)
 		glGenBuffers(1, &m_NBO[i]); // generate a 'name' for the NBO
 		glGenBuffers(1, &m_IBO[i]); // generate a 'name' for the IBO
 		// Bind ibo to the index buffer.
-		
-		
+
+
 	}
-	
 	updateBuffers();
-	
+}
+
+Model::Model(Shader* shader) {
+	m_shader = shader;
+	for (int i = 0; i < 8; i++) {
+		m_VBO.push_back(0); //making space inside of the buffer for the vertices
+		m_NBO.push_back(0); //making space inside of the buffer for the normals
+		m_IBO.push_back(0); //making space inside of the buffer for the indices
+		glGenBuffers(1, &m_VBO[i]); // generate a 'name' for the VBO
+		glGenBuffers(1, &m_NBO[i]); // generate a 'name' for the NBO
+		glGenBuffers(1, &m_IBO[i]); // generate a 'name' for the IBO
+		// Bind ibo to the index buffer.
+	}
 }
 
 

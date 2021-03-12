@@ -116,7 +116,9 @@ int Shader::GetProgramID()
 {
 	return m_program;
 }
-
+bool Shader::isInitialized() {
+	return m_program!=-1;
+}
 void Shader::Activate()
 {
 	glUseProgram(m_program);

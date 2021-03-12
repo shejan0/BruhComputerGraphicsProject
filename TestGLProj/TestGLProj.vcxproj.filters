@@ -30,6 +30,9 @@
     <ClCompile Include="GObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h">
@@ -47,6 +50,9 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\green.frag">
@@ -58,5 +64,15 @@
     <None Include="shaders\phong.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="models\unitcube.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="models\cube.obj" />
+    <Object Include="models\cylinder.obj" />
+    <Object Include="models\Obamium.obj" />
+    <Object Include="models\plane.obj" />
+    <Object Include="models\sphere.obj" />
+    <Object Include="models\torus.obj" />
+    <Object Include="models\unitcube.obj" />
   </ItemGroup>
 </Project>
