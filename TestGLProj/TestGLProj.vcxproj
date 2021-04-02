@@ -104,13 +104,27 @@
     <None Include="shaders\phong.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\cube.obj" />
-    <Object Include="models\cylinder.obj" />
-    <Object Include="models\Obamium.obj" />
-    <Object Include="models\plane.obj" />
-    <Object Include="models\sphere.obj" />
-    <Object Include="models\torus.obj" />
-    <Object Include="models\unitcube.obj" />
+    <None Include="models\cube.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="models\cylinder.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="models\Obamium.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="models\plane.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="models\sphere.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="models\torus.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="models\unitcube.obj">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

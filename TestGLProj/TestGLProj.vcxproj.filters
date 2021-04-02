@@ -65,14 +65,12 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="models\unitcube.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="models\cube.obj" />
-    <Object Include="models\cylinder.obj" />
-    <Object Include="models\Obamium.obj" />
-    <Object Include="models\plane.obj" />
-    <Object Include="models\sphere.obj" />
-    <Object Include="models\torus.obj" />
-    <Object Include="models\unitcube.obj" />
+    <None Include="models\cube.obj" />
+    <None Include="models\cylinder.obj" />
+    <None Include="models\Obamium.obj" />
+    <None Include="models\plane.obj" />
+    <None Include="models\sphere.obj" />
+    <None Include="models\torus.obj" />
+    <None Include="models\unitcube.obj" />
   </ItemGroup>
 </Project>
