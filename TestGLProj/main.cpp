@@ -42,7 +42,9 @@ void checkError(const char *functionName)
 		std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
 	}
 }
-
+glm::mat4 getProjection(float nearfield, float fov) {
+	return glm::infinitePerspective(fov, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), nearfield);
+}
 void initShader(void)
 {
 	shader.InitializeFromFile("shaders/phong.vert", "shaders/phong.frag");
@@ -61,9 +63,9 @@ void initRendering(void)
 void init(void) 
 {	
 	// Perspective projection matrix.
-	projection = glm::perspective(45.0f, 800.0f/600.0f, 1.0f, 1000.0f);
-
-	
+	//projection = glm::perspective(45.0f, (float)glutGet(GLUT_WINDOW_WIDTH)/(float)glutGet(GLUT_WINDOW_HEIGHT), 1.0f, 1000.0f);
+	//projection = glm::infinitePerspective(45.0f, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), 1.0f);
+	projection = getProjection(1.0f, 45.0f);
 	// Load identity matrix into model matrix (no initial translation or rotation)
 	
 
@@ -124,6 +126,9 @@ void idle()
 void reshape (int w, int h)
 {
 	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+	//projection = glm::perspective(45.0f, (float)w/(float)h, 1.0f, 1000.0f);
+	//projection = glm::infinitePerspective(45.0f, (float)w / (float)h, 1.0f);
+	projection = getProjection(1.0f,45.0f);
 	checkError ("reshape");
 }
 
