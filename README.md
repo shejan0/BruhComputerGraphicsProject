@@ -1,8 +1,8 @@
 # BruhComputerGraphicsProject
 
-This is the Final project for Computer Graphics Spring 2021, glDoom edition
+This is the Final Project for CS 4383 - Computer Graphics at UTSA for Spring 2021, glDoom edition
 
-Authors:
+Group 42 Authors:
 ----------
 
 Shejan Shuza
