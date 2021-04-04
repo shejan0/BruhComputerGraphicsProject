@@ -17,6 +17,7 @@
 
 
 Camera::CameraMovement sendValCamcustom = Camera::CameraMovement();
+Camera::CameraMovement sendValCamcustomFly = Camera::CameraMovement();
 
 glm::vec4 vec4Eye; // Converts eye from vec3 to vec4 temporarily in order to rotate it with glm::translate
 glm::vec4 vec4Center; // Converts center from vec3 to vec4 temporarily in order to rotate it with glm::rotate
@@ -48,9 +49,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 			eye = glm::vec3(vec4Eye);
 			center = glm::vec3(vec4Center);
 
-			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
-			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
-
 			break;
 
 		case 's': // Moves camera back
@@ -60,9 +58,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 			vec4Center = glm::translate(-lookatdir) * vec4Center;
 			eye = glm::vec3(vec4Eye);
 			center = glm::vec3(vec4Center);
-
-			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
-			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
 
 			break;
 
@@ -74,9 +69,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 				* vec4Center;
 			center = glm::vec3(vec4Center);
 
-			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
-			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
-
 			break;
 
 		case 'd': // Rotates camera to the right
@@ -86,9 +78,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 				* glm::translate(-eye.x, -eye.y, -eye.z)
 				* vec4Center;
 			center = glm::vec3(vec4Center);
-
-			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
-			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
 
 			break;
 
@@ -154,7 +143,7 @@ Camera::CameraMovement Camera::FlyCameraKeyboard(int key, glm::vec3 eye, glm::ve
 	}
 
 	// Return our center and eye values back to the caller
-	sendValCamcustom.centerReturn = center;
-	sendValCamcustom.eyeReturn = eye;
-	return sendValCamcustom;
+	sendValCamcustomFly.centerReturn = center;
+	sendValCamcustomFly.eyeReturn = eye;
+	return sendValCamcustomFly;
 }

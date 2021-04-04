@@ -36,12 +36,16 @@
 
 
 /* -- Doom Camera Declarations -- */
-Camera::CameraMovement retValCamcustom = Camera::CameraMovement();
+Camera::CameraMovement retValCamcustom = Camera::CameraMovement(); // Struct to hold our values for 1st person camera
+Camera::CameraMovement retValCamcustomFly = Camera::CameraMovement(); // Struct to hold our values for fly mode camera
 Camera customCam;
 glm::vec3 eye(0.0f, 0.0f, 0.0f);  // The eye of the camera in first-person
 glm::vec3 center(0.0f, 0.0f, 1.0f); // The center of the camera's focus in first-person
-bool firstPersonCameraMain = true; // Bool for camera being first person or not
-bool inFly = true; // Checker for fly camera values
+
+glm::vec3 eyeFly; // The eye of the camera in fly mode
+glm::vec3 centerFly; // The center of the camera's focus in fly mode
+
+bool isFirstPersonCamera = true; // Bool for camera being first person or not
 /* -- End of Doom Camera Declarations -- */
 
 
@@ -126,14 +130,6 @@ void init(void)
 
 	initShader ();
 	initRendering ();
-
-	printf("Eye at start is: %f %f %f\n", eye.x, eye.y, eye.z);
-	printf("Center at start is: %f %f %f\n", center.x, center.y, center.z);
-
-	printf("Sphere[0]: %f %f %f %f\n", sphereTransMatrix[0].x, sphereTransMatrix[0].y, sphereTransMatrix[0].z, sphereTransMatrix[0].w);
-	printf("Sphere[1]: %f %f %f %f\n", sphereTransMatrix[1].x, sphereTransMatrix[1].y, sphereTransMatrix[1].z, sphereTransMatrix[1].w);
-	printf("Sphere[2]: %f %f %f %f\n", sphereTransMatrix[2].x, sphereTransMatrix[2].y, sphereTransMatrix[2].z, sphereTransMatrix[2].w);
-	printf("Sphere[3]: %f %f %f %f\n", sphereTransMatrix[3].x, sphereTransMatrix[3].y, sphereTransMatrix[3].z, sphereTransMatrix[3].w);
 }
 
 
@@ -154,7 +150,12 @@ void display(void)
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clears the framebuffer data from the last frame
 
 	// Camera view for our Doom game
-	viewMatrix = glm::lookAt(retValCamcustom.eyeReturn, retValCamcustom.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
+	// Changes the view matrix depending on which camera type is being used in the program.
+	if (isFirstPersonCamera == true)
+		viewMatrix = glm::lookAt(retValCamcustom.eyeReturn, retValCamcustom.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
+	else
+		viewMatrix = glm::lookAt(retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
+	
 	
 	// Updates the model matrix representing our head.
 	headModelMatrix = modelMatrix;
@@ -189,14 +190,17 @@ void reshape (int w, int h)
 void keyboard(unsigned char key, int x, int y)
 {
 	// Toggles between first-person and fly camera with 'c'
-	if (key == 'c' && firstPersonCameraMain == true)
+	if (key == 'c' && isFirstPersonCamera == true)
 	{
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 40.0f); // The eye starting point will be further back
-		retValCamcustom.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
-		firstPersonCameraMain = false;
+		// Makes it so that the fly camera always starts viewing at angle towards where the player currently is
+		retValCamcustomFly.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 40.0f); // The eye starting point will be further back
+		retValCamcustomFly.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
+		isFirstPersonCamera = false;
 	}
-	else if (key == 'c' && firstPersonCameraMain == false)
-		firstPersonCameraMain = true;
+	else if (key == 'c' && isFirstPersonCamera == false)
+	{
+		isFirstPersonCamera = true;
+	}
 
 	// Activates each case depending on which key on the keyboard is pressed
 	switch (key) 
@@ -212,8 +216,6 @@ void keyboard(unsigned char key, int x, int y)
 			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 			
-			printf("LookatdirReturn: %f %f %f\n", retValCamcustom.lookatdirReturn.x, retValCamcustom.lookatdirReturn.y, retValCamcustom.lookatdirReturn.z);
-
 			// Updates the model matrix of our character to move forward
 			modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
 
@@ -260,11 +262,11 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 
 		case 'f': // Zooms in (Fly camera)
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
 			break;
 
 		case 'v': // Zooms out (Fly camera)
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
 			break;
 	}
 }
@@ -273,25 +275,13 @@ void keyboard(unsigned char key, int x, int y)
 // Fly Camera calls are done here
 void SpecialKeyHandler(int key, int x, int y)
 {
-	if (firstPersonCameraMain == false)
+	if (isFirstPersonCamera == false)
 	{
-		// If we are new to using inFly, send new values in
-		if (inFly == true)
-		{
-			// Flyby camera shall be moving
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 40.0f); // The eye starting point will be further back
-			retValCamcustom.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
-
-			// Call our custom keyboard camera
-			retValCamcustom = customCam.FlyCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
-		}
-		else // We don't change what is in our eye and center
-			// Call our custom keyboard camera
-			retValCamcustom = customCam.FlyCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
-
-		inFly = false;
+		// Call our custom keyboard camera
+		retValCamcustomFly = customCam.FlyCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
 	}
 }
+
 
 
 int main(int argc, char** argv)
