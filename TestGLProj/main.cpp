@@ -10,48 +10,72 @@
 
 #include "Model.h"
 #include "GObject.h"
-#include "Scene.h" //Scene>GObject>Model>Shader all defined in recursion
+#include "Scene.h" // Scene>GObject>Model>Shader all defined in recursion
 #include "Shader.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "DoomCamera.h"//first person camera
+#include "Camera.h" // Camera for our game
+
+/*
+ * main.cpp
+ * 
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ *
+ * Last Modified Date: 4/4/21
+ *
+ * *************Description of this file goes here*************
+ *
+ */
 
 
-
-/* -- Doom Camera Declaration  --*/
+/* -- Doom Camera Declarations -- */
 Camera::CameraMovement retValCamcustom = Camera::CameraMovement();
 Camera customCam;
 glm::vec3 eye(0.0f, 0.0f, 0.0f);  // The eye of the camera in first-person
-glm::vec3 center(0.0f, 1.0f, 10.0f); // The center of the camera's focus in first-pers
-bool firstPersonCameraMain = true; //bool for camera being first person or not
-int inFly = 1; //checker for fly camera values
+glm::vec3 center(0.0f, 1.0f, 10.0f); // The center of the camera's focus in first-person
+bool firstPersonCameraMain = true; // Bool for camera being first person or not
+bool inFly = true; // Checker for fly camera values
+/* -- End of Doom Camera Declarations -- */
 
-/* -- Head Model Declaration- */
+
+/* -- Matrix Declarations -- */
+glm::mat4 modelMatrix; // Where the overall model is located with respect to the camera
+glm::mat4 viewMatrix; // Where the camera is looking
+glm::mat4 projectionMatrix; // Projection matrix
+
 glm::mat4 headModelMatrix; // Model matrix representing the head's position
-glm::mat4 sphereTrans; // this will be our head
+
+glm::mat4 sphereTransMatrix; // Where the sphere model is located wrt the camera
+glm::mat4 cubeTransMatrix; // Where the cube model is located wrt the camera
+glm::mat4 cylinderTransMatrix; // Where the cylinder model is located wrt the camera
+glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt the camera
+/*-- End of Matrix Declarations --*/
 
 
-
-
-glm::vec3 move(0.0f,0.0f, 15.0f);
-//glm::vec3 center(0.0f,0.0f,0.0f);
+/* -- Shader, Model, and Scene Declarations -- */
 Shader shader; // loads our vertex and fragment shaders
-Model* cylinder; //a cylinder 
-Model* plane; //a plane
-Model* sphere; //a sphere
-Model* cube; //a cube
-Model* obamium;
-GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam;
-glm::mat4 cubeTrans; // where the model is located wrt the camera
-glm::mat4 cylinderTrans; // where the model is located wrt the camera
-glm::mat4 planeTrans;
-glm::mat4 view; // where the camera is looking
-glm::mat4 projection; // projection matrix
-Scene scene;
 
-float angle = 0;
-/* report GL errors, if any, to stderr */
+Model* cylinder; // a cylinder 
+Model* ground; // a plane representing the ground
+Model* sphere; // a sphere
+Model* cube; // a cube
+Model* obamium;
+
+GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam;
+
+Scene scene;
+/* -- Shader, Model, and Scene Declarations End Here -- */
+
+float rotation = 0.0f; // Float to handle rotation speed
+
+
+/* Reports GL errors, if any, to stderr. */
 void checkError(const char *functionName)
 {
 	GLenum error;
@@ -59,9 +83,13 @@ void checkError(const char *functionName)
 		std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
 	}
 }
+
+
 glm::mat4 getProjection(float nearfield, float fov) {
 	return glm::infinitePerspective(fov, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), nearfield);
 }
+
+
 void initShader(void)
 {
 	shader.InitializeFromFile("shaders/phong.vert", "shaders/phong.frag");
@@ -71,33 +99,35 @@ void initShader(void)
 	checkError ("initShader");
 }
 
+
 void initRendering(void)
 {
-	glClearColor (0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue
+	glClearColor (0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue Background Color
 	checkError ("initRendering");
 }
+
 
 void init(void) 
 {	
 	// Perspective projection matrix.
 	//projection = glm::perspective(45.0f, (float)glutGet(GLUT_WINDOW_WIDTH)/(float)glutGet(GLUT_WINDOW_HEIGHT), 1.0f, 1000.0f);
 	//projection = glm::infinitePerspective(45.0f, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), 1.0f);
-	projection = getProjection(1.0f, 45.0f);
-	// Load identity matrix into model matrix (no initial translation or rotation)
+	projectionMatrix = getProjection(1.0f, 45.0f);
 	
-	headModelMatrix = sphereTrans * glm::scale(0.55f, 0.55f, 0.55f) * glm::translate(0.0f, 3.0f, 0.0f);
+	// Calculates the initial model matrix of the head in order to be able to set the eye of the first-person camera at the robot's starting position.
+	headModelMatrix = modelMatrix * glm::scale(0.55f, 0.55f, 0.55f) * glm::translate(0.0f, 3.0f, 0.0f);
 	eye = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
 
-	//initialize the current data for our struct
+	// Initializes the data for our struct for our camera
 	retValCamcustom.eyeReturn = eye;
 	retValCamcustom.centerReturn = center;
-
 
 	initShader ();
 	initRendering ();
 }
 
-/* This prints in the console when you start the program*/
+
+/* This prints in the console when you start the program. */
 void dumpInfo(void)
 {
 	printf ("Vendor: %s\n", glGetString (GL_VENDOR));
@@ -106,172 +136,149 @@ void dumpInfo(void)
 	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 	checkError ("dumpInfo");
 }
-float rotation = 0.0f;
-/*This gets called when the OpenGL is asked to display. This is where all the main rendering calls go*/
+
+/* This gets called when the OpenGL is asked to display. This is where all the main rendering calls go. */
 void display(void)
 {
+	/* The transformation heirarchy is cylinder -> sphere -> cube */
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clears the framebuffer data from the last frame
 
-/*The transformation heirarchy is cylinder -> sphere -> cube*/
-	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer data from the last frame
-
-	//First Person camera view for our doom game
-	view = glm::lookAt(retValCamcustom.eyeReturn, retValCamcustom.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
-
+	// First-person camera view for our Doom game
+	viewMatrix = glm::lookAt(retValCamcustom.eyeReturn, retValCamcustom.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
 	
+	// Updates the model matrix representing our head.
+	headModelMatrix = modelMatrix * glm::scale(0.55f, 0.55f, 0.55f) * glm::translate(0.0f, 3.0f, 0.0f);
+
+	// Renders the ground.
+	ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(20.0f, 1.0f, 20.0f), projectionMatrix);
+
 	cubOb->setRotation(glm::vec3(rotation * 2.0f, 0.0f, 0.0f));
 	Obam->setRotation(glm::vec3(0.0f, rotation * 2.0f, 0.0f));
 	
-
-	scene.draw(projection, view);
+	scene.draw(projectionMatrix, viewMatrix);
 
 	glutSwapBuffers(); // Swap the buffers.
 	checkError ("display");
 }
 
-/*This gets called when nothing is happening (OFTEN)*/
+/* This gets called when nothing is happening (OFTEN) */
 void idle()
 {
-	glutPostRedisplay(); // create a display event. Display calls as fast as CPU will allow when put in the idle function
+	glutPostRedisplay(); // Creates a display event. Display calls as fast as CPU will allow when put in the idle function.
 }
 
-/*Called when the window is resized*/
+/* Called when the window is resized. */
 void reshape (int w, int h)
 {
 	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-	projection = getProjection(1.0f,45.0f);
+	projectionMatrix = getProjection(1.0f,45.0f);
 	checkError ("reshape");
 }
 
-/*Called when a normal key is pressed*/
+/* Called when a normal key is pressed. */
 void keyboard(unsigned char key, int x, int y)
 {
-
-	//toggle between firstPerson and fly camera with C
+	// Toggles between first-person and fly camera with 'c'
 	if (key == 'c' && firstPersonCameraMain == true)
 	{
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 20.0f); // the eye, starting point will be further back
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 20.0f); // The eye starting point will be further back
 		retValCamcustom.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
-		printf("Toggling first person mode off \n");
 		firstPersonCameraMain = false;
 	}
 	else if (key == 'c' && firstPersonCameraMain == false)
-	{
-
-		printf("Toggling first person mode on \n");
 		firstPersonCameraMain = true;
-	}
 
-
-
-
-
-
-
+	// Activates each case depending on which key on the keyboard is pressed
 	switch (key) 
 	{
-		case 27: // this is an ascii value
+		case 27: // This is an ASCII value respresenting the ESC key
 			exit(0);
 			break;
 
-
-		// move forward
-		case 'w':
-			
-			//setup the values to send to our camera
+		case 'w': // Moves our character forward
+			// Sets up the values to send to our camera
 			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
-			retValCamcustom.centerReturn = retValCamcustom.centerReturn;
 
-			//call our custom keyboard camera
+			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			
+			// Updates the model matrix of our character to move forward
+			modelMatrix = modelMatrix * glm::translate(0.0f, 0.0f, 1.0f);
+			
 			break;
 
-		// move back
-		case 's':
-			
-			//setup the values to send to our camera
+		case 's': // Moves our character back
+			// Sets up the values to send to our camera
 			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
-			retValCamcustom.centerReturn = retValCamcustom.centerReturn;
 
-			//call our custom keyboard camera
+			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			
+			// Updates the model matrix of our character to move back
+			modelMatrix = modelMatrix * glm::translate(0.0f, 0.0f, -1.0f);
+			
 			break;
 
-		// move left
-		case 'a':
-			
-			//setup the values to send to our camera
+		case 'a': // Rotates our character to the left
+			// Sets up the values to send to our camera
 			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
-			retValCamcustom.centerReturn = retValCamcustom.centerReturn;
 
-			//call our custom keyboard camera
+			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			
+			// Rotates the model matrix of our character to the left
+			modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
+
 			break;
 
-		// move right
-		case 'd':
-			
-			//setup the values to send to our camera
+		case 'd': // Rotates our character to the right	
+			// Sets up the values to send to our camera
 			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
-			retValCamcustom.centerReturn = retValCamcustom.centerReturn;
 
-			//call our custom keyboard camera
+			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			
+			// Rotates the model matrix of our character to the right
+			modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
+
 			break;
 	
-		case 'b':
+		case 'b': // Activates the bounding boxes of objects in the scene
 			scene.changeBoxState();
 			break;
 
-		//zoom in (FLY BY CAMERA)
-		case 'f':
+		case 'f': // Zooms in (Fly camera)
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 			break;
 
-		//Zoom out (Fly By camera)
-		case 'v':
+		case 'v': // Zooms out (Fly camera)
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 			break;
 	}
 }
 
 
-
-
-//freeflycamera calls are done here
+// Fly Camera calls are done here
 void SpecialKeyHandler(int key, int x, int y)
 {
-	printf("in special keyboard \n");
-
-	//check if in the special key
-
 	if (firstPersonCameraMain == false)
 	{
-
-
-		//if we are new in the influ counter send new values in
-		if (inFly == 1)
+		// If we are new to using inFly, send new values in
+		if (inFly == true)
 		{
-			//flyby camera shall be moving
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 20.0f); // the eye, starting point will be further back
+			// Flyby camera shall be moving
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 20.0f); // The eye starting point will be further back
 			retValCamcustom.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
 
-			//call our custom keyboard camera
+			// Call our custom keyboard camera
 			retValCamcustom = customCam.FlyCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 		}
-		else //we don't change what is in our move and center
-		{
-
-			printf("in else \n");
-			printf("Center in else is: %f %f %f \n", center.x, center.y, center.z);
-			printf("Eye in else is: %f %f %f \n", move.x, move.y, move.z);
-			//call our custom keyboard camera
+		else // We don't change what is in our eye and center
+			// Call our custom keyboard camera
 			retValCamcustom = customCam.FlyCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
-		}
 
-
-		inFly = 0;
+		inFly = false;
 	}
-
 }
 
 
@@ -290,29 +297,35 @@ int main(int argc, char** argv)
 	glutIdleFunc(idle); 
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc (keyboard);
-	glutSpecialFunc(SpecialKeyHandler);// special keyboard
+	glutSpecialFunc(SpecialKeyHandler); // Special keyboard
 	glEnable(GL_DEPTH_TEST);
-	
 	
 	fprintf(stderr, "Scene %p\n", &scene);
 	fprintf(stderr, "Shader: %p\n", &shader);
+
 	cylinder = new Model(&shader, "models/cylinder.obj");
-	plane = new Model(&shader, "models/plane.obj");
-	sphere = new Model(&shader, "models/sphere.obj");
+	ground = new Model(&shader, "models/plane.obj"); // Loads the plane model for the ground
+	sphere = new Model(&shader, "models/sphere.obj"); // !!! Used temporarily as our "head" until we have a character model
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
 	obamium = new Model(&shader, "models/obamium.obj");
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
+	
 	cylOb = new GObject(cylinder);
-	planOb = new GObject(plane);
+	planOb = new GObject(ground);
 	sphOb = new GObject(sphere);
 	cubOb = new GObject(cube);
 	Obam = new GObject(obamium);
 	//fprintf(stderr, "GObject: Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylOb, planOb, sphOb, cubOb);
+	
 	scene.addChild(cylOb);
 	cylOb->addChild(sphOb);
 	sphOb->addChild(cubOb);
 	scene.addChild(planOb);
 	sphOb->addChild(Obam);
+	//scene.addChild(planOb);
+	//scene.addChild(sphOb);
+	//scene.addChild(cubOb);
+
 	cylOb->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	cylOb->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 	sphOb->setPosition(glm::vec3(0.0, 2.2f, 0.0f));
@@ -320,9 +333,7 @@ int main(int argc, char** argv)
 	cubOb->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
 	Obam->setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
 	planOb->setPosition(glm::vec3(0.0f, 1.5f, 0.0f));
-	//scene.addChild(planOb);
-	//scene.addChild(sphOb);
-	//scene.addChild(cubOb);
+
 	glutMainLoop();
 
 	return 0;

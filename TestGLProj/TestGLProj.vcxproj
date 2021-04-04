@@ -83,7 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingBox.cpp" />
-    <ClCompile Include="DoomCamera.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoundingBox.h" />
-    <ClInclude Include="DoomCamera.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GObject.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Scene.h" />

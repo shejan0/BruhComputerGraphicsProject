@@ -33,7 +33,7 @@
     <ClCompile Include="BoundingBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoomCamera.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClInclude Include="BoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DoomCamera.h">
+    <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
