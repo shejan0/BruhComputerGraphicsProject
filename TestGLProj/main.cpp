@@ -17,6 +17,7 @@
 #include <string.h>
 #include "Camera.h" // Camera for our game
 
+
 /*
  * main.cpp
  * 
@@ -38,7 +39,7 @@
 Camera::CameraMovement retValCamcustom = Camera::CameraMovement();
 Camera customCam;
 glm::vec3 eye(0.0f, 0.0f, 0.0f);  // The eye of the camera in first-person
-glm::vec3 center(0.0f, 1.0f, 10.0f); // The center of the camera's focus in first-person
+glm::vec3 center(0.0f, 0.0f, 1.0f); // The center of the camera's focus in first-person
 bool firstPersonCameraMain = true; // Bool for camera being first person or not
 bool inFly = true; // Checker for fly camera values
 /* -- End of Doom Camera Declarations -- */
@@ -115,7 +116,8 @@ void init(void)
 	projectionMatrix = getProjection(1.0f, 45.0f);
 	
 	// Calculates the initial model matrix of the head in order to be able to set the eye of the first-person camera at the robot's starting position.
-	headModelMatrix = modelMatrix * glm::scale(0.55f, 0.55f, 0.55f) * glm::translate(0.0f, 3.0f, 0.0f);
+	modelMatrix = sphereTransMatrix;
+	headModelMatrix = modelMatrix;
 	eye = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
 
 	// Initializes the data for our struct for our camera
@@ -124,6 +126,14 @@ void init(void)
 
 	initShader ();
 	initRendering ();
+
+	printf("Eye at start is: %f %f %f\n", eye.x, eye.y, eye.z);
+	printf("Center at start is: %f %f %f\n", center.x, center.y, center.z);
+
+	printf("Sphere[0]: %f %f %f %f\n", sphereTransMatrix[0].x, sphereTransMatrix[0].y, sphereTransMatrix[0].z, sphereTransMatrix[0].w);
+	printf("Sphere[1]: %f %f %f %f\n", sphereTransMatrix[1].x, sphereTransMatrix[1].y, sphereTransMatrix[1].z, sphereTransMatrix[1].w);
+	printf("Sphere[2]: %f %f %f %f\n", sphereTransMatrix[2].x, sphereTransMatrix[2].y, sphereTransMatrix[2].z, sphereTransMatrix[2].w);
+	printf("Sphere[3]: %f %f %f %f\n", sphereTransMatrix[3].x, sphereTransMatrix[3].y, sphereTransMatrix[3].z, sphereTransMatrix[3].w);
 }
 
 
@@ -143,11 +153,11 @@ void display(void)
 	/* The transformation heirarchy is cylinder -> sphere -> cube */
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clears the framebuffer data from the last frame
 
-	// First-person camera view for our Doom game
+	// Camera view for our Doom game
 	viewMatrix = glm::lookAt(retValCamcustom.eyeReturn, retValCamcustom.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	// Updates the model matrix representing our head.
-	headModelMatrix = modelMatrix * glm::scale(0.55f, 0.55f, 0.55f) * glm::translate(0.0f, 3.0f, 0.0f);
+	headModelMatrix = modelMatrix;
 
 	// Renders the ground.
 	ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(20.0f, 1.0f, 20.0f), projectionMatrix);
@@ -181,7 +191,7 @@ void keyboard(unsigned char key, int x, int y)
 	// Toggles between first-person and fly camera with 'c'
 	if (key == 'c' && firstPersonCameraMain == true)
 	{
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 20.0f); // The eye starting point will be further back
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 40.0f); // The eye starting point will be further back
 		retValCamcustom.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
 		firstPersonCameraMain = false;
 	}
@@ -202,9 +212,11 @@ void keyboard(unsigned char key, int x, int y)
 			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 			
+			printf("LookatdirReturn: %f %f %f\n", retValCamcustom.lookatdirReturn.x, retValCamcustom.lookatdirReturn.y, retValCamcustom.lookatdirReturn.z);
+
 			// Updates the model matrix of our character to move forward
-			modelMatrix = modelMatrix * glm::translate(0.0f, 0.0f, 1.0f);
-			
+			modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
+
 			break;
 
 		case 's': // Moves our character back
@@ -215,8 +227,8 @@ void keyboard(unsigned char key, int x, int y)
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 			
 			// Updates the model matrix of our character to move back
-			modelMatrix = modelMatrix * glm::translate(0.0f, 0.0f, -1.0f);
-			
+			modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
+
 			break;
 
 		case 'a': // Rotates our character to the left
@@ -267,7 +279,7 @@ void SpecialKeyHandler(int key, int x, int y)
 		if (inFly == true)
 		{
 			// Flyby camera shall be moving
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 20.0f); // The eye starting point will be further back
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 20.0f, headModelMatrix[3].z - 40.0f); // The eye starting point will be further back
 			retValCamcustom.centerReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y + 5.0f, headModelMatrix[3].z + 10.0f);
 
 			// Call our custom keyboard camera

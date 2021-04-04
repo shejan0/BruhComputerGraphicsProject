@@ -31,6 +31,7 @@ class Camera
 		{
 			glm::vec3 eyeReturn; // Represents the camera eye
 			glm::vec3 centerReturn; // Represents the camera center
+			glm::vec3 lookatdirReturn;  // Represents the direction the camera is looking at
 		};
 
 		// This will be called in main()'s keyboard()

@@ -18,6 +18,7 @@
 
 Camera::CameraMovement sendValCamcustom = Camera::CameraMovement();
 
+glm::vec4 vec4Eye; // Converts eye from vec3 to vec4 temporarily in order to rotate it with glm::translate
 glm::vec4 vec4Center; // Converts center from vec3 to vec4 temporarily in order to rotate it with glm::rotate
 glm::vec3 lookUp = glm::vec3(0.0f, 1.0f, 0.0f); // vec3 to rotate camera upwards and downwards in camera fly mode
 
@@ -30,6 +31,7 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 {
 	glm::vec3 lookatdir = glm::normalize(center - eye); // Normalizes the direction vector that the camera is looking at
 	vec4Center = glm::vec4(center, 1.0f); // Converts center from vec3 to vec4 temporarily in order to rotate it with glm::rotate
+	vec4Eye = glm::vec4(eye, 1.0f);
 
 	// Activates each case depending on which key on the keyboard is pressed
 	switch (key) 
@@ -39,13 +41,29 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 			break;
 
 		case 'w': // Moves camera forward
-			eye += lookatdir;
-			center += lookatdir;
+			//eye += lookatdir;
+			//center += lookatdir;
+			vec4Eye = glm::translate(lookatdir) * vec4Eye;
+			vec4Center = glm::translate(lookatdir) * vec4Center;
+			eye = glm::vec3(vec4Eye);
+			center = glm::vec3(vec4Center);
+
+			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
+			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
+
 			break;
 
 		case 's': // Moves camera back
-			eye -= lookatdir;
-			center -= lookatdir;
+			//eye -= lookatdir;
+			//center -= lookatdir;
+			vec4Eye = glm::translate(-lookatdir) * vec4Eye;
+			vec4Center = glm::translate(-lookatdir) * vec4Center;
+			eye = glm::vec3(vec4Eye);
+			center = glm::vec3(vec4Center);
+
+			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
+			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
+
 			break;
 
 		case 'a': // Rotates camera to the left
@@ -55,6 +73,10 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 				* glm::translate(-eye.x, -eye.y, -eye.z)
 				* vec4Center;
 			center = glm::vec3(vec4Center);
+
+			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
+			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
+
 			break;
 
 		case 'd': // Rotates camera to the right
@@ -64,6 +86,10 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 				* glm::translate(-eye.x, -eye.y, -eye.z)
 				* vec4Center;
 			center = glm::vec3(vec4Center);
+
+			printf("Eye is: %f %f %f\n", eye.x, eye.y, eye.z);
+			printf("Center is: %f %f %f\n", center.x, center.y, center.z);
+
 			break;
 
 		// The following cases are for flyby camera controls only
@@ -81,6 +107,7 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 	// Return our center and eye values back to the caller
 	sendValCamcustom.centerReturn = center;
 	sendValCamcustom.eyeReturn = eye;
+	sendValCamcustom.lookatdirReturn = lookatdir;
 	return sendValCamcustom;
 }
 
@@ -89,7 +116,7 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 Camera::CameraMovement Camera::FlyCameraKeyboard(int key, glm::vec3 eye, glm::vec3 center)
 {
 	// Makes the center a vec4 for easy calculations
-	vec4Center = glm::vec4(center, 1); 
+	vec4Center = glm::vec4(center, 1.0f); 
 
 	// x2 is the distance to move forward in 1 key which is the crossproduct of what we call up and the lookat direction
 	glm::vec3 x2 = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), center - eye));
