@@ -95,6 +95,7 @@ bool Shader::SetUniform(std::string name, glm::mat4 value)
 	return true;
 }
 
+ // I Got rid of this because it was not needed. I wrapped this into the [] operator
 bool Shader::AddAttribute(std::string attribute)
 {
 	int loc = glGetAttribLocation(m_program, attribute.c_str());
@@ -108,9 +109,15 @@ bool Shader::AddAttribute(std::string attribute)
 }
 
 GLuint Shader::operator[](std::string attribute)
+
 {
+	int loc = glGetAttribLocation(m_program, attribute.c_str());
+
+	m_attributeList[attribute] = loc;
+
 	return m_attributeList[attribute];
 }
+
 
 int Shader::GetProgramID()
 {

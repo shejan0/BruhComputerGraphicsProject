@@ -1,3 +1,8 @@
+
+#define PROJECT_NAME "Final Project for CS 4383 Quarles-Spring 2021"
+#define GROUP_NUM "Group 42"
+#define LAST_EDIT_DATE "4/13/21"
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -28,11 +33,12 @@
  *    Tyler Everett
  *    Christopher Urista
  *
- * Last Modified Date: 4/4/21
+ *
  *
  * *************Description of this file goes here*************
  *
  */
+
 
 
 /* -- Doom Camera Declarations -- */
@@ -97,7 +103,7 @@ glm::mat4 getProjection(float nearfield, float fov) {
 
 void initShader(void)
 {
-	shader.InitializeFromFile("shaders/phong.vert", "shaders/phong.frag");
+	shader.InitializeFromFile("shaders/phong3text.vert", "shaders/phong3text.frag");
 	shader.AddAttribute("vertexPosition");
 	shader.AddAttribute("vertexNormal");
 
@@ -287,11 +293,13 @@ void SpecialKeyHandler(int key, int x, int y)
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_DOUBLE| GLUT_RGB | GLUT_DEPTH |GLUT_MULTISAMPLE);
+	glutInitDisplayMode (GLUT_DOUBLE| GLUT_RGBA | GLUT_DEPTH |GLUT_MULTISAMPLE);
 	glutSetOption(GLUT_MULTISAMPLE, 4);
 	glutInitWindowSize (800, 600); 
 	glutInitWindowPosition (100, 100);
-	glutCreateWindow (argv[0]);
+	std::string windowtitle = std::string(PROJECT_NAME)+"-"+std::string(GROUP_NUM)+"-"+std::string(LAST_EDIT_DATE)+"-"+std::string(argv[0]);
+	//glutCreateWindow (argv[0]);
+	glutCreateWindow(windowtitle.c_str());
 	glewInit();
 	dumpInfo ();
 	init ();

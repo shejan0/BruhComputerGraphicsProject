@@ -24,7 +24,7 @@ public:
 	bool SetUniform(std::string name, glm::mat3 value);
 	bool SetUniform(std::string name, glm::mat4 value);
 
-	bool AddAttribute(std::string attribute);
+	bool AddAttribute(std::string attribute); // I Got rid of this because it was not needed. I wrapped this into the [] operator
 	GLuint operator[](std::string attribute);
 
 	int GetProgramID();

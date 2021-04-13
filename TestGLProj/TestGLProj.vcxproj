@@ -103,6 +103,8 @@
     <None Include="shaders\green.frag" />
     <None Include="shaders\phong.frag" />
     <None Include="shaders\phong.vert" />
+    <None Include="shaders\phong3text.frag" />
+    <None Include="shaders\phong3text.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="models\cube.obj">

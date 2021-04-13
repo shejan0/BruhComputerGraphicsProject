@@ -78,5 +78,11 @@
     <None Include="models\sphere.obj" />
     <None Include="models\torus.obj" />
     <None Include="models\unitcube.obj" />
+    <None Include="shaders\phong3text.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\phong3text.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
