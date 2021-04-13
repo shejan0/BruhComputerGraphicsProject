@@ -23,21 +23,40 @@ public:
 		glm::vec3 Normal; // determines which way the vertex is 'facing'
 
 	};
+	struct Textures {
+		GLuint ambient;
+		GLuint diffuse;
+		GLuint specular;
+		GLuint normal;
+	};
 
 	Model(Shader* shader, const char* filename, const char* materialPath = NULL); //load a model
 
 	Model(Shader* shader);
 	~Model(void){} // default destructor
-	void render(glm::mat4 ModelView, glm::mat4 Projection); // render the model
+	void render(glm::mat4 ModelView, glm::mat4 Projection, bool useObjMaterial=false); // render the model
+	void setOverrideDiffuseMaterial(glm::vec4 color);
+	void setOverrideSpecularMaterial(glm::vec4 color);
+	void setOverrideSpecularShininessMaterial(float shine);
+	void setOverrideAmbientMaterial(glm::vec4 color);
+	void setOverrideEmissiveMaterial(glm::vec4 color);
 	friend class BoundingBox;
 protected:
+	static std::map<std::string, GLuint> textureManager;
+	glm::vec4 diffuseOverride;
+	glm::vec4 specularOverride;
+	float shininessOverride;
+	glm::vec4 ambientOverride;
+	glm::vec4 emissiveOverride;
 	Shader *m_shader; // shader program
 	std::vector<tinyobj::shape_t> shapes; //a list of meshes and their respective materials
+	std::vector<struct Textures> textures;
 	std::vector<GLuint> m_VBO;// vertex buffer IDs, each corresponding to a shape
 	std::vector<GLuint> m_NBO;// normal buffer IDs, each corresponding to a shape
 	std::vector<GLuint> m_IBO;// index buffer IDs, each corresponding to a shape
-
+	std::vector<GLuint> m_TCBO;// texture coord buffer IDs, each corresponding to a shape
 	void updateBuffers(); //initialize your VBO and update when triangles are added
+	GLuint LoadTexture(const char* filename);
 	
 	
 

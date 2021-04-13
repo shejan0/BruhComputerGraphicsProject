@@ -72,7 +72,7 @@ Model* sphere; // a sphere
 Model* cube; // a cube
 Model* obamium;
 
-GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam;
+GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam, *groundOb;
 
 Scene scene;
 /* -- Shader, Model, and Scene Declarations End Here -- */
@@ -161,7 +161,7 @@ void display(void)
 	headModelMatrix = modelMatrix;
 
 	// Renders the ground.
-	ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(20.0f, 1.0f, 20.0f), projectionMatrix);
+	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(20.0f, 1.0f, 20.0f), projectionMatrix);
 
 	cubOb->setRotation(glm::vec3(rotation * 2.0f, 0.0f, 0.0f));
 	Obam->setRotation(glm::vec3(0.0f, rotation * 2.0f, 0.0f));
@@ -317,8 +317,9 @@ int main(int argc, char** argv)
 	sphOb = new GObject(sphere);
 	cubOb = new GObject(cube);
 	Obam = new GObject(obamium);
+	groundOb = new GObject(ground);
 	//fprintf(stderr, "GObject: Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylOb, planOb, sphOb, cubOb);
-	
+	scene.addChild(groundOb);
 	scene.addChild(cylOb);
 	cylOb->addChild(sphOb);
 	sphOb->addChild(cubOb);
@@ -327,7 +328,8 @@ int main(int argc, char** argv)
 	//scene.addChild(planOb);
 	//scene.addChild(sphOb);
 	//scene.addChild(cubOb);
-
+	groundOb->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+	groundOb->setScale(glm::vec3(20.0f, 1.0f, 20.0f));
 	cylOb->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	cylOb->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 	sphOb->setPosition(glm::vec3(0.0, 2.2f, 0.0f));
