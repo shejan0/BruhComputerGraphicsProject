@@ -48,7 +48,7 @@ private:
 	//glm::mat4 localTransform;
 	Model* model;
 	BoundingBox* box=NULL;
-	static Shader green; //causing external symbol issues 
+	static Shader green;  
 	bool boxOn=false;
 	
 };
