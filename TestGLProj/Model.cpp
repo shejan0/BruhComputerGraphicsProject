@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Error.h"
 //gli library
 #include <gli/gli.hpp>
 #include <gli/gtx/gl_texture2d.hpp>
@@ -51,7 +52,7 @@ Model::Model(Shader* shader, const char* filename, const char* materialPath)
 
 
 	}
-
+	checkError("Model constructor");
 	updateBuffers();
 
 }
@@ -71,6 +72,7 @@ Model::Model(Shader* shader) {
 		glGenBuffers(1, &m_IBO[i]); // generate a 'name' for the IBO
 		// Bind ibo to the index buffer.
 	}
+	checkError("Model constructor 2");
 }
 
 GLuint Model::LoadTexture(const char* filename)
@@ -80,9 +82,10 @@ GLuint Model::LoadTexture(const char* filename)
 	gl_texID = gli::createTexture2D(filename);
 
 	glBindTexture(GL_TEXTURE_2D, gl_texID);
-
+	checkError("Model::LoadTexture");
 	//return ID
 	return gl_texID;
+
 }
 
 /*
@@ -98,8 +101,13 @@ void Model::render(glm::mat4 ModelView, glm::mat4 Projection, bool useObjMateria
 	m_shader->SetUniform("Projection", Projection); // send projection to vertex shader
 	m_shader->SetUniform("ModelView", ModelView);  // send modelview to vertex shader
 
-
+	m_shader->SetUniform("lightPosition", ModelView * glm::vec4(0.0f, 0.0f, -3.0f, 1.0f));
+	m_shader->SetUniform("lightDiffuse", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	m_shader->SetUniform("lightSpecular", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	m_shader->SetUniform("lightAmbient", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	m_shader->SetUniform("linearAttenuationCoefficient", .1f);
 	//m_shader->SetUniform("lightPosition", glm::vec4(1.0, 0.0, 0.0, 1.0)); // send light position to vertex shader
+	//std::cerr << useObjMaterial << std::endl;
 	for (int i = 0; i < shapes.size(); i++) {
 		if (useObjMaterial) {
 			m_shader->SetUniform("surfaceDiffuse", glm::vec4(shapes[i].material.diffuse[0], shapes[i].material.diffuse[1], shapes[i].material.diffuse[2], 1.0));
@@ -110,11 +118,17 @@ void Model::render(glm::mat4 ModelView, glm::mat4 Projection, bool useObjMateria
 		}
 		else {
 			m_shader->SetUniform("surfaceDiffuse", diffuseOverride);
+			checkError("Model bruh");
 			m_shader->SetUniform("surfaceSpecular", specularOverride);
+			checkError("Model bruh 2");
 			m_shader->SetUniform("surfaceAmbient", ambientOverride);
+			checkError("Model bruh 3");
 			m_shader->SetUniform("shininess", shininessOverride);
+			checkError("Model bruh 4");
 			m_shader->SetUniform("surfaceEmissive", emissiveOverride);
+			checkError("Model bruh 5");
 		}
+		
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO[i]); // Bind VBO.
 		glEnableVertexAttribArray((*m_shader)["vertexPosition"]); // Enable vertex attribute.
 		glVertexAttribPointer((*m_shader)["vertexPosition"], 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0); // Attribute pointer.
@@ -139,6 +153,7 @@ void Model::render(glm::mat4 ModelView, glm::mat4 Projection, bool useObjMateria
 		glDrawElements(GL_TRIANGLES, shapes[i].mesh.indices.size(), GL_UNSIGNED_INT, 0); // Draw using indices
 	}
 	m_shader->DeActivate(); // Unbind shader.
+	checkError("Model::render");
 }
 
 
@@ -169,6 +184,7 @@ void Model::updateBuffers()
 
 
 	}
+	checkError("Model::updateBuffers");
 
 }
 

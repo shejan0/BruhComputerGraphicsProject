@@ -1,7 +1,8 @@
 
 #define PROJECT_NAME "Final Project for CS 4383 Quarles-Spring 2021"
 #define GROUP_NUM "Group 42"
-#define LAST_EDIT_DATE "4/13/21"
+#define LAST_EDIT_DATE "4/13/21 6:00PM"
+#define LAST_EDITOR "Shejan Shuza"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -21,6 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "Camera.h" // Camera for our game
+#include "Error.h"
 
 
 /*
@@ -87,13 +89,13 @@ float rotation = 0.0f; // Float to handle rotation speed
 
 
 /* Reports GL errors, if any, to stderr. */
-void checkError(const char *functionName)
+/*void checkError(const char *functionName)
 {
 	GLenum error;
 	while (( error = glGetError() ) != GL_NO_ERROR) {
 		std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
 	}
-}
+}*/
 
 
 glm::mat4 getProjection(float nearfield, float fov) {
@@ -162,7 +164,11 @@ void display(void)
 	else
 		viewMatrix = glm::lookAt(retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn, glm::vec3(0.0f, 1.0f, 0.0f));
 	
-	
+	/*shader.SetUniform("lightPosition", viewMatrix * glm::vec4(0.0f, 0.0f, 3.0f, 1.0f));
+	shader.SetUniform("lightDiffuse", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightSpecular", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightAmbient", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("linearAttenuationCoefficient", .3f);*/
 	// Updates the model matrix representing our head.
 	headModelMatrix = modelMatrix;
 
@@ -297,7 +303,7 @@ int main(int argc, char** argv)
 	glutSetOption(GLUT_MULTISAMPLE, 4);
 	glutInitWindowSize (800, 600); 
 	glutInitWindowPosition (100, 100);
-	std::string windowtitle = std::string(PROJECT_NAME)+"-"+std::string(GROUP_NUM)+"-"+std::string(LAST_EDIT_DATE)+"-"+std::string(argv[0]);
+	std::string windowtitle = std::string(PROJECT_NAME)+"-"+std::string(GROUP_NUM)+"-"+std::string(LAST_EDIT_DATE)+"-"+std::string(LAST_EDITOR)+"-"+std::string(argv[0]);
 	//glutCreateWindow (argv[0]);
 	glutCreateWindow(windowtitle.c_str());
 	glewInit();
@@ -309,17 +315,23 @@ int main(int argc, char** argv)
 	glutKeyboardFunc (keyboard);
 	glutSpecialFunc(SpecialKeyHandler); // Special keyboard
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_ARB_debug_output);
+	//glDebugMessageCallbackARB(MessageCallback, 0);
 	
 	fprintf(stderr, "Scene %p\n", &scene);
 	fprintf(stderr, "Shader: %p\n", &shader);
-
 	cylinder = new Model(&shader, "models/cylinder.obj");
 	ground = new Model(&shader, "models/plane.obj"); // Loads the plane model for the ground
 	sphere = new Model(&shader, "models/sphere.obj"); // !!! Used temporarily as our "head" until we have a character model
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
 	obamium = new Model(&shader, "models/obamium.obj");
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
-	
+	cylinder->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	ground->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	sphere->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	cube->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	obamium->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	cylinder->setOverrideSpecularMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	cylOb = new GObject(cylinder);
 	planOb = new GObject(ground);
 	sphOb = new GObject(sphere);
