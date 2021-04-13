@@ -31,7 +31,7 @@ public:
 	glm::vec3 getPosition();
 	glm::vec3 getRotation();
 	glm::vec3 getScale();
-	void draw(glm::mat4 worldProjection=glm::mat4(),glm::mat4 transform=glm::mat4(),bool useObjectMaterials=false); //default to identity
+	void draw(glm::mat4 worldProjection=glm::mat4(),glm::mat4 transform=glm::mat4()); //default to identity
 	~GObject(); //default deconstruct children
 	GObject* removeChild(GObject* child = NULL);
 	//GObject* createChild();
@@ -41,6 +41,7 @@ public:
 	//glm::mat4 updateLocalProjection(glm::mat4 projection);
 	GObject* setModel(Model* model);
 	void changeBoxState();
+	void useObjectMaterials(bool obj);
 private: 
 	void createBoxState();
 	std::vector<GObject *> children;
@@ -50,6 +51,7 @@ private:
 	BoundingBox* box=NULL;
 	static Shader green;  
 	bool boxOn=false;
+	bool useMaterials = false;
 	
 };
 

@@ -111,13 +111,16 @@ glm::vec3 GObject::scale(glm::vec3 scaleby) {
 	scales += scaleby;
 	return scales;
 }
-void GObject::draw(glm::mat4 worldProjection,glm::mat4 transform, bool useObjectMaterials) {
+void GObject::useObjectMaterials(bool obj) {
+	useMaterials = obj;
+}
+void GObject::draw(glm::mat4 worldProjection,glm::mat4 transform) {
 	//fprintf(stderr, "%p is rendering %p\n", this,model);
 	
 	glm::mat4 transforml = transform * glm::translate(position)*glm::rotate(rotation[0],1.0f,0.0f,0.0f)*glm::rotate(rotation[1],0.0f,1.0f,0.0f)* glm::rotate(rotation[2], 0.0f, 0.0f, 1.0f)*glm::scale(scales);
 	//std::cerr << glm::to_string(glm::scale(scales)) << std::endl;
 	if (model != NULL) {
-		model->render(transforml, worldProjection,useObjectMaterials);
+		model->render(transforml, worldProjection, useMaterials);
 	}
 	if (boxOn) {
 		if (box != NULL) {
@@ -126,7 +129,7 @@ void GObject::draw(glm::mat4 worldProjection,glm::mat4 transform, bool useObject
 	}
 	if (children.size() > 0) {
 		for (size_t n = 0; n < children.size(); n++) {
-			children[n]->draw(worldProjection, transforml,useObjectMaterials);
+			children[n]->draw(worldProjection, transforml);
 		}
 	}
 }

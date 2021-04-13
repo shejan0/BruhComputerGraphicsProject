@@ -88,4 +88,7 @@
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Object Include="models\cacodemon.obj" />
+  </ItemGroup>
 </Project>
