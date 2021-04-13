@@ -79,8 +79,9 @@ Model* ground; // a plane representing the ground
 Model* sphere; // a sphere
 Model* cube; // a cube
 Model* obamium;
+Model* demon;
 
-GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam, *groundOb;
+GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam, *groundOb,*demonOb;
 
 Scene scene;
 /* -- Shader, Model, and Scene Declarations End Here -- */
@@ -325,6 +326,7 @@ int main(int argc, char** argv)
 	sphere = new Model(&shader, "models/sphere.obj"); // !!! Used temporarily as our "head" until we have a character model
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
 	obamium = new Model(&shader, "models/obamium.obj");
+	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
 	cylinder->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 	ground->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
@@ -338,8 +340,10 @@ int main(int argc, char** argv)
 	cubOb = new GObject(cube);
 	Obam = new GObject(obamium);
 	groundOb = new GObject(ground);
+	demonOb = new GObject(demon);
 	//fprintf(stderr, "GObject: Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylOb, planOb, sphOb, cubOb);
 	scene.addChild(groundOb);
+	scene.addChild(demonOb);
 	scene.addChild(cylOb);
 	cylOb->addChild(sphOb);
 	sphOb->addChild(cubOb);
@@ -348,6 +352,7 @@ int main(int argc, char** argv)
 	//scene.addChild(planOb);
 	//scene.addChild(sphOb);
 	//scene.addChild(cubOb);
+	demonOb->useObjectMaterials(true);
 	groundOb->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
 	groundOb->setScale(glm::vec3(20.0f, 1.0f, 20.0f));
 	cylOb->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
