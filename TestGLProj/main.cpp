@@ -131,7 +131,7 @@ void init(void)
 	// Calculates the initial model matrix of the head in order to be able to set the eye of the first-person camera at the robot's starting position.
 	modelMatrix = sphereTransMatrix;
 	headModelMatrix = modelMatrix;
-	eye = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
+	eye = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
 	// Initializes the data for our struct for our camera
 	retValCamcustom.eyeReturn = eye;
@@ -224,7 +224,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		case 'w': // Moves our character forward
 			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
 			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
@@ -236,7 +236,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		case 's': // Moves our character back
 			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
 			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
@@ -248,7 +248,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		case 'a': // Rotates our character to the left
 			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
 			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
@@ -260,7 +260,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		case 'd': // Rotates our character to the right	
 			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z);
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
 			// Calls our custom keyboard camera
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
