@@ -131,7 +131,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\cacodemon.obj" />
+    <None Include="models\cacodemon.obj">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

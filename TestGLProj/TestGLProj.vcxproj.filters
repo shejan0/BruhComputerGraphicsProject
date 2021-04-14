@@ -87,8 +87,6 @@
     <None Include="shaders\phong3text.vert">
       <Filter>Source Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="models\cacodemon.obj" />
+    <None Include="models\cacodemon.obj" />
   </ItemGroup>
 </Project>
