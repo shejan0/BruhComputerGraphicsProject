@@ -328,12 +328,12 @@ int main(int argc, char** argv)
 	obamium = new Model(&shader, "models/obamium.obj");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
-	cylinder->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	ground->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	sphere->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	cube->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	obamium->setOverrideDiffuseMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	cylinder->setOverrideSpecularMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	cylinder->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	sphere->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	cube->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	obamium->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	cylinder->setOverrideSpecularMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 	cylOb = new GObject(cylinder);
 	planOb = new GObject(ground);
 	sphOb = new GObject(sphere);
@@ -353,6 +353,8 @@ int main(int argc, char** argv)
 	//scene.addChild(sphOb);
 	//scene.addChild(cubOb);
 	demonOb->useObjectMaterials(true);
+	demonOb->setRotation(glm::vec3(0.0f, 180.0f, 0.0f));
+	demonOb->setPosition(glm::vec3(3.0f, 0.0f, 0.0f));
 	groundOb->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
 	groundOb->setScale(glm::vec3(20.0f, 1.0f, 20.0f));
 	cylOb->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));

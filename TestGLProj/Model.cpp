@@ -101,7 +101,7 @@ void Model::render(glm::mat4 ModelView, glm::mat4 Projection, bool useObjMateria
 	m_shader->SetUniform("Projection", Projection); // send projection to vertex shader
 	m_shader->SetUniform("ModelView", ModelView);  // send modelview to vertex shader
 
-	m_shader->SetUniform("lightPosition", ModelView * glm::vec4(0.0f, 0.0f, -3.0f, 1.0f));
+	m_shader->SetUniform("lightPosition", /*ModelView * */glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	m_shader->SetUniform("lightDiffuse", glm::vec4(1.0, 1.0, 1.0, 1.0));
 	m_shader->SetUniform("lightSpecular", glm::vec4(1.0, 1.0, 1.0, 1.0));
 	m_shader->SetUniform("lightAmbient", glm::vec4(1.0, 1.0, 1.0, 1.0));
