@@ -1,4 +1,19 @@
 #include "Shader.h"
+/*
+ * Shader.cpp
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ * Description: Copied from Assignment 2, initializes and creates Shader programs in OpenGL context
+ *
+ *
+ *
+ *
+ */
 
 Shader::Shader()
 {

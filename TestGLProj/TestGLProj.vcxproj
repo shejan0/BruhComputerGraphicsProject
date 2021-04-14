@@ -100,6 +100,8 @@
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="models\cacodemon.mtl" />
+    <None Include="models\obamid.mtl" />
     <None Include="models\unitcube.mtl" />
     <None Include="shaders\green.frag" />
     <None Include="shaders\phong.frag" />
@@ -132,6 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="models\cacodemon.obj">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="models\obamid.obj">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

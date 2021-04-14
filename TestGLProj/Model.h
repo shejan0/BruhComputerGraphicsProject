@@ -1,6 +1,20 @@
 #ifndef MODEL_H
 #define MODEL_H
-
+/*
+ * Model.h
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ * Description: Model holds the basic elements for storing vertices, indices, and textures (majorly copied from EC Assignment 4 and reworked)
+ *
+ *
+ *
+ *
+ */
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -9,6 +23,7 @@
 #include "tiny_obj_loader.h"
 #include <string>
 #include "Shader.h"
+#include "Error.h"
 
 /*This class represents a mesh - a collection of triangles. It stores a list of vertices, which are interpreted by openGL as every 3 vertices makes a triangle.*/
 class Model{

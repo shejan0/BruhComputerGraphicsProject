@@ -1,16 +1,29 @@
 #ifndef GOBJECT_H
 #define GOBJECT_H
+/*
+ * GObject.h
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ * Description: Meant to be the core Object element for our "engine", it stores properties about Models (which stores Shaders), BoundingBoxes, has parental hierarchy,and abstracts the transformations using easy to understand degrees and units.
+ *
+ *
+ *
+ *
+ */
 #define GREEN_VERT "shaders/phong.vert"
 #define GREEN_FRAG "shaders/green.frag"
 
 #include "Model.h"
 #include "BoundingBox.h"
-
+#include "Error.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform2.hpp>
-/* #include <glm/gtx/quaternion.hpp>
-#include <glm/gtc/quaternion.hpp> */
 
 class GObject {
 public:
@@ -36,9 +49,6 @@ public:
 	GObject* removeChild(GObject* child = NULL);
 	//GObject* createChild();
 	void addChild(GObject* newChild);
-	//glm::mat4 rotate();
-	//glm::mat4 updateModelView(glm::mat4 localView);
-	//glm::mat4 updateLocalProjection(glm::mat4 projection);
 	GObject* setModel(Model* model);
 	void changeBoxState();
 	void useObjectMaterials(bool obj);
@@ -46,7 +56,6 @@ private:
 	void createBoxState();
 	std::vector<GObject *> children;
 	glm::vec3 position, rotation, scales = glm::vec3(1,1,1);
-	//glm::mat4 localTransform;
 	Model* model;
 	BoundingBox* box=NULL;
 	static Shader green;  

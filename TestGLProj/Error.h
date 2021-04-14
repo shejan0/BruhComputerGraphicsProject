@@ -1,11 +1,25 @@
 #ifndef ERROR_H
 #define ERROR_H
+/*
+ * Error.h
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ * Description: Inline definitions of checkError and MessageCallback that allows consistent implementations of Error checking across the program
+ *
+ *
+ *
+ *
+ */
 #include <GL/freeglut.h>
-#include <gl/GL.h>
-inline void checkError(const char* functionName)
+inline void checkError(const char* functionName) //inline means it can be defined here and used in any include location
 {
 	GLenum error;
-	while ((error = glGetError()) != GL_NO_ERROR) {
+	while ((error = glGetError()) != GL_NO_ERROR) { //loop until the error codes is removed.
 		std::cerr << "GL error 0x" << std::hex<<error << " detected in " << functionName << std::endl;
 		switch (error) {
 		case GL_INVALID_ENUM:

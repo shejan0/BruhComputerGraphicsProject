@@ -1,4 +1,19 @@
 #include "Model.h"
+/*
+ * Model.cpp
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ * Description: Model holds the basic elements for storing vertices, indices, and textures (majorly copied from EC Assignment 4 and reworked)
+ *
+ *
+ *
+ *
+ */
 #include "Error.h"
 //gli library
 #include <gli/gli.hpp>

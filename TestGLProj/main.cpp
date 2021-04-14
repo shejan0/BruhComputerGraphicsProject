@@ -1,7 +1,7 @@
 
 #define PROJECT_NAME "Final Project for CS 4383 Quarles-Spring 2021"
 #define GROUP_NUM "Group 42"
-#define LAST_EDIT_DATE "4/13/21 6:00PM"
+#define LAST_EDIT_DATE "4/14/21 4:05PM"
 #define LAST_EDITOR "Shejan Shuza"
 
 #include <GL/glew.h>
@@ -27,17 +27,17 @@
 
 /*
  * main.cpp
- * 
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
  * Authors:
  *    Shejan Shuza
  *    Gabriel Vidaurri
  *    Joseph Daau
  *    Tyler Everett
  *    Christopher Urista
+ * Description: Defines the main() for the program and acts as controller for many core elements.
  *
  *
- *
- * *************Description of this file goes here*************
+ * 
  *
  */
 
@@ -325,7 +325,8 @@ int main(int argc, char** argv)
 	ground = new Model(&shader, "models/plane.obj"); // Loads the plane model for the ground
 	sphere = new Model(&shader, "models/sphere.obj"); // !!! Used temporarily as our "head" until we have a character model
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
-	obamium = new Model(&shader, "models/obamium.obj");
+	//obamium = new Model(&shader, "models/obamium.obj");
+	obamium = new Model(&shader, "models/obamid.obj","models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
 	cylinder->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -333,7 +334,8 @@ int main(int argc, char** argv)
 	sphere->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	cube->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	obamium->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	cylinder->setOverrideSpecularMaterial(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	demon->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	cylinder->setOverrideSpecularMaterial(glm::vec4(0.5f, 0.5f, 0.0f, 0.3f));
 	cylOb = new GObject(cylinder);
 	planOb = new GObject(ground);
 	sphOb = new GObject(sphere);
@@ -352,7 +354,8 @@ int main(int argc, char** argv)
 	//scene.addChild(planOb);
 	//scene.addChild(sphOb);
 	//scene.addChild(cubOb);
-	demonOb->useObjectMaterials(true);
+	//demonOb->useObjectMaterials(true);
+	//Obam->useObjectMaterials(true);
 	demonOb->setRotation(glm::vec3(0.0f, 180.0f, 0.0f));
 	demonOb->setPosition(glm::vec3(3.0f, 0.0f, 0.0f));
 	groundOb->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));

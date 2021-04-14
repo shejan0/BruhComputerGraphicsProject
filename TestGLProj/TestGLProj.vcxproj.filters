@@ -88,5 +88,8 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="models\cacodemon.obj" />
+    <None Include="models\obamid.obj" />
+    <None Include="models\cacodemon.mtl" />
+    <None Include="models\obamid.mtl" />
   </ItemGroup>
 </Project>

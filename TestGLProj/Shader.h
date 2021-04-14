@@ -1,6 +1,20 @@
 #ifndef SHADER_H
 #define SHADER_H
-
+/*
+ * Shader.h
+ * GitHub link: https://github.com/shejan0/BruhComputerGraphicsProject
+ * Authors:
+ *    Shejan Shuza
+ *    Gabriel Vidaurri
+ *    Joseph Daau
+ *    Tyler Everett
+ *    Christopher Urista
+ * Description: Copied from Assignment 2, initializes and creates Shader programs in OpenGL context
+ *
+ *
+ *
+ *
+ */
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -8,6 +22,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include "Error.h"
 
 class Shader {
 
