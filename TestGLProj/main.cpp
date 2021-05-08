@@ -71,6 +71,7 @@ glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt
 /* -- Shader, Model, and Scene Declarations -- */
 Shader shader; // loads our vertex and fragment shaders
 
+Model* gun; // The gun
 Model* cylinder; // a cylinder 
 Model* ground; // a plane representing the ground
 Model* sphere; // a sphere
@@ -327,7 +328,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition (100, 100);
 	std::string windowtitle = std::string(PROJECT_NAME)+"-"+std::string(GROUP_NUM)+"-"+std::string(LAST_EDIT_DATE)+"-"+std::string(LAST_EDITOR)+"-"+std::string(argv[0]);
 	//glutCreateWindow (argv[0]);
-	glutCreateWindow(windowtitle.c_str());
+	glutCreateWindow("Simple Doom Game");//windowtitle.c_str());
 	glewInit();
 	dumpInfo ();
 	init ();
@@ -339,6 +340,8 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ARB_debug_output);
 	//glDebugMessageCallbackARB(MessageCallback, 0);
+
+	//gun = new Model(&shader, "models/m16_1.obj", "models/");
 	
 	fprintf(stderr, "Scene %p\n", &scene);
 	fprintf(stderr, "Shader: %p\n", &shader);
@@ -349,6 +352,7 @@ int main(int argc, char** argv)
 	//obamium = new Model(&shader, "models/obamium.obj");
 	obamium = new Model(&shader, "models/obamid.obj","models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
+
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
 	cylinder->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -357,6 +361,7 @@ int main(int argc, char** argv)
 	obamium->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	demon->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	cylinder->setOverrideSpecularMaterial(glm::vec4(0.5f, 0.5f, 0.0f, 0.3f));
+
 	cylOb = new GObject(cylinder);
 	planOb = new GObject(ground);
 	sphOb = new GObject(sphere);
