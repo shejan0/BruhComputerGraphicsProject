@@ -92,7 +92,4 @@
     <None Include="models\cacodemon.mtl" />
     <None Include="models\obamid.mtl" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="models\m16_1.obj" />
-  </ItemGroup>
 </Project>

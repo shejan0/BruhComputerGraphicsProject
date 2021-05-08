@@ -150,6 +150,7 @@ void dumpInfo(void)
 	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 	checkError ("dumpInfo");
 }
+
 void renderWalls()
 {
 	//furthest right walls, to make the outside border
@@ -276,7 +277,7 @@ void keyboard(unsigned char key, int x, int y)
 			exit(0);
 			break;
 
-		case 'q': // Strafes left
+		case 'q': // Strafes left //DOES NOT WORK
 			// Sets up the values to send to our camera
 			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
@@ -284,10 +285,10 @@ void keyboard(unsigned char key, int x, int y)
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
 			// Updates the model matrix of our character to strafe to the left
-			modelMatrix = glm::translate(1.0f, 0.0f, 0.0f) * modelMatrix;
+			modelMatrix = glm::translate(x1) * modelMatrix;
 			break;
 
-		case 'e': // Strafes right
+		case 'e': // Strafes right //DOES NOT WORK
 			// Sets up the values to send to our camera
 			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
@@ -295,7 +296,7 @@ void keyboard(unsigned char key, int x, int y)
 			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
 			// Updates the model matrix of our character to strafe to the right
-			modelMatrix = glm::translate(-1.0f, 0.0f, 0.0f) * modelMatrix;
+			modelMatrix = glm::translate(-x1) * modelMatrix;
 			break;
 
 		case 'w': // Moves our character forward

@@ -41,14 +41,22 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 			exit(0);
 			break;
 		
-		case 'q': // Strafe camera left
-			eye += x1;
-			center += x1;
+		case 'q': // Strafe camera left //DOES NOT WORK
+			//eye += x1;
+			//center += x1;
+			vec4Eye = glm::translate(x1) * vec4Eye;
+			vec4Center = glm::translate(x1) * vec4Center;
+			eye = glm::vec3(vec4Eye);
+			center = glm::vec3(vec4Center);
 			break;
 
-		case 'e': // Strafe camera right
-			eye -= x1;
-			center -= x1;
+		case 'e': // Strafe camera right //DOES NOT WORK
+			//eye -= x1;
+			//center -= x1;
+			vec4Eye = glm::translate(-x1) * vec4Eye;
+			vec4Center = glm::translate(-x1) * vec4Center;
+			eye = glm::vec3(vec4Eye);
+			center = glm::vec3(vec4Center);
 			break;
 
 		case 'w': // Moves camera forward
