@@ -77,7 +77,10 @@ Model* sphere; // a sphere
 Model* cube; // a cube
 Model* obamium;
 Model* demon;
-Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7, * wall8, * wall9; 
+//all the walls walls
+Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7, 
+     * wall8, * wall9, * wall10, * wall11, * wall12, * wall13,  *wall14,
+	 * wall15, * wall16, * wall17, * wall18, * wall19, * wall20, * wall21;
 GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam, *groundOb,*demonOb;
 
 Scene scene;
@@ -148,6 +151,38 @@ void dumpInfo(void)
 	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 	checkError ("dumpInfo");
 }
+void renderWalls(void)
+{
+	//furthest right wall, to make the outside border
+	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f), projectionMatrix);
+	wall2->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f), projectionMatrix);
+
+
+	//vertical walls within the border walls. positioned from left to right 
+	wall3->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f), projectionMatrix);
+	wall4->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f), projectionMatrix);
+	wall5->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall6->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f), projectionMatrix);
+	wall7->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall8->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f), projectionMatrix);
+	wall9->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f), projectionMatrix);
+	wall10->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f), projectionMatrix);
+	wall11->render(viewMatrix * glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f), projectionMatrix);
+	
+	//horizontal walls 
+	wall14->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f), projectionMatrix);
+	wall14->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f), projectionMatrix);
+
+
+
+
+	//furthest left wall, makes the outside border
+	wall12->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f), projectionMatrix);
+	wall13->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f), projectionMatrix);
+
+
+}
+
 
 /* This gets called when the OpenGL is asked to display. This is where all the main rendering calls go. */
 void display(void)
@@ -172,16 +207,9 @@ void display(void)
 
 	// Renders the ground.
 	ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
-		// Renders the walls 
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
-	wall2->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
-	wall3->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
-	wall4->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(0.0f, 0.2f, 0.0f), projectionMatrix);
-	wall5->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-20.0f, 0.2f, 0.0f), projectionMatrix);
-	wall6->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-40.0f, 0.2f, 0.0f), projectionMatrix);
-	wall7->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-60.0f, 0.2f, 0.0f), projectionMatrix);
-	wall8->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-80.0f, 0.2f, 0.0f), projectionMatrix);
-	wall9->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-100.0f, 0.2f, 0.0f), projectionMatrix);
+
+	renderWalls();
+
 
 	cubOb->setRotation(glm::vec3(rotation * 2.0f, 0.0f, 0.0f));
 	Obam->setRotation(glm::vec3(0.0f, rotation * 2.0f, 0.0f));
@@ -365,8 +393,18 @@ int main(int argc, char** argv)
 	wall6 = new Model(&shader, "models/unitcube.obj", "models/");
 	wall7 = new Model(&shader, "models/unitcube.obj", "models/");
 	wall8 = new Model(&shader, "models/unitcube.obj", "models/");
-
 	wall9 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall10 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall11 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall12 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall13 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall14 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall15 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall16 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall17 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall18 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall19 = new Model(&shader, "models/unitcube.obj", "models/");
+
 	//obamium = new Model(&shader, "models/obamium.obj");
 	obamium = new Model(&shader, "models/obamid.obj","models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
