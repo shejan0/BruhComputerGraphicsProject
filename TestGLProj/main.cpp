@@ -80,7 +80,7 @@ Model* sphere; // a sphere
 Model* cube; // a cube
 Model* obamium;
 Model* demon;
-
+Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7, * wall8, * wall9; 
 GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam, *groundOb,*demonOb;
 
 Scene scene;
@@ -174,7 +174,17 @@ void display(void)
 	headModelMatrix = modelMatrix;
 
 	// Renders the ground.
-	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(20.0f, 1.0f, 20.0f), projectionMatrix);
+	ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
+		// Renders the walls 
+	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall2->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall3->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall4->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(0.0f, 0.2f, 0.0f), projectionMatrix);
+	wall5->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall6->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-40.0f, 0.2f, 0.0f), projectionMatrix);
+	wall7->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-60.0f, 0.2f, 0.0f), projectionMatrix);
+	wall8->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-80.0f, 0.2f, 0.0f), projectionMatrix);
+	wall9->render(viewMatrix * glm::scale(1.0f, 20.0f, 100.0f) * glm::translate(-100.0f, 0.2f, 0.0f), projectionMatrix);
 
 	cubOb->setRotation(glm::vec3(rotation * 2.0f, 0.0f, 0.0f));
 	Obam->setRotation(glm::vec3(0.0f, rotation * 2.0f, 0.0f));
@@ -325,6 +335,17 @@ int main(int argc, char** argv)
 	ground = new Model(&shader, "models/plane.obj"); // Loads the plane model for the ground
 	sphere = new Model(&shader, "models/sphere.obj"); // !!! Used temporarily as our "head" until we have a character model
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
+
+	wall1 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall2 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall3 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall4 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall5 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall6 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall7 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall8 = new Model(&shader, "models/unitcube.obj", "models/");
+
+	wall9 = new Model(&shader, "models/unitcube.obj", "models/");
 	//obamium = new Model(&shader, "models/obamium.obj");
 	obamium = new Model(&shader, "models/obamid.obj","models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
