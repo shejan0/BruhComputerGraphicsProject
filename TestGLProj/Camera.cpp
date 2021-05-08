@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include <stdio.h>
 
 /*
  * Camera.cpp
@@ -8,7 +7,7 @@
  *    Gabriel Vidaurri
  *    Joseph Daau
  *
- * Last Modified Date: 4/4/21
+ * Last Modified Date: 5/8/21
  *
  * Represents the camera for our Doom game. Has functions for our first-person camera, in addition to 
  * allowing the user to switch to a fly mode camera for debugging purposes.
@@ -30,6 +29,7 @@ int degreeCounter = 0; // Limits how far up and down you can look in fly mode. (
 // Our Doom camera movement and rotations
 Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3 eye, glm::vec3 center)
 {
+	glm::vec3 x1 = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), center - eye));
 	glm::vec3 lookatdir = glm::normalize(center - eye); // Normalizes the direction vector that the camera is looking at
 	vec4Center = glm::vec4(center, 1.0f); // Converts center from vec3 to vec4 temporarily in order to rotate it with glm::rotate
 	vec4Eye = glm::vec4(eye, 1.0f);
@@ -40,6 +40,16 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 		case 27: // This is an ASCII value respresenting the ESC key
 			exit(0);
 			break;
+		
+		case 'q': // Strafe camera left
+			eye += x1;
+			center += x1;
+			break;
+
+		case 'e': // Strafe camera right
+			eye -= x1;
+			center -= x1;
+			break;
 
 		case 'w': // Moves camera forward
 			//eye += lookatdir;
@@ -48,7 +58,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 			vec4Center = glm::translate(lookatdir) * vec4Center;
 			eye = glm::vec3(vec4Eye);
 			center = glm::vec3(vec4Center);
-
 			break;
 
 		case 's': // Moves camera back
@@ -58,7 +67,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 			vec4Center = glm::translate(-lookatdir) * vec4Center;
 			eye = glm::vec3(vec4Eye);
 			center = glm::vec3(vec4Center);
-
 			break;
 
 		case 'a': // Rotates camera to the left
@@ -68,7 +76,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 				* glm::translate(-eye.x, -eye.y, -eye.z)
 				* vec4Center;
 			center = glm::vec3(vec4Center);
-
 			break;
 
 		case 'd': // Rotates camera to the right
@@ -78,7 +85,6 @@ Camera::CameraMovement Camera::CustomCameraKeyboard(unsigned char key, glm::vec3
 				* glm::translate(-eye.x, -eye.y, -eye.z)
 				* vec4Center;
 			center = glm::vec3(vec4Center);
-
 			break;
 
 		// The following cases are for flyby camera controls only
