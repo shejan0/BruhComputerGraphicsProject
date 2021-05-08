@@ -71,14 +71,16 @@ glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt
 /* -- Shader, Model, and Scene Declarations -- */
 Shader shader; // loads our vertex and fragment shaders
 
-Model* gun; // The gun
 Model* cylinder; // a cylinder 
 Model* ground; // a plane representing the ground
 Model* sphere; // a sphere
 Model* cube; // a cube
 Model* obamium;
 Model* demon;
-
+//all the walls walls
+Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7, 
+     * wall8, * wall9, * wall10, * wall11, * wall12, * wall13,  *wall14,
+	 * wall15, * wall16, * wall17, * wall18, * wall19, * wall20, * wall21;
 GObject* cylOb, * planOb, * sphOb, * cubOb, *Obam, *groundOb,*demonOb;
 
 Scene scene;
@@ -149,6 +151,38 @@ void dumpInfo(void)
 	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 	checkError ("dumpInfo");
 }
+void renderWalls(void)
+{
+	//furthest right wall, to make the outside border
+	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f), projectionMatrix);
+	wall2->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f), projectionMatrix);
+
+
+	//vertical walls within the border walls. positioned from left to right 
+	wall3->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f), projectionMatrix);
+	wall4->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f), projectionMatrix);
+	wall5->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall6->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f), projectionMatrix);
+	wall7->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix);
+	wall8->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f), projectionMatrix);
+	wall9->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f), projectionMatrix);
+	wall10->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f), projectionMatrix);
+	wall11->render(viewMatrix * glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f), projectionMatrix);
+	
+	//horizontal walls 
+	wall14->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f), projectionMatrix);
+	wall14->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f), projectionMatrix);
+
+
+
+
+	//furthest left wall, makes the outside border
+	wall12->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f), projectionMatrix);
+	wall13->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f), projectionMatrix);
+
+
+}
+
 
 /* This gets called when the OpenGL is asked to display. This is where all the main rendering calls go. */
 void display(void)
@@ -172,7 +206,10 @@ void display(void)
 	headModelMatrix = modelMatrix;
 
 	// Renders the ground.
-	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(20.0f, 1.0f, 20.0f), projectionMatrix);
+	ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
+
+	renderWalls();
+
 
 	cubOb->setRotation(glm::vec3(rotation * 2.0f, 0.0f, 0.0f));
 	Obam->setRotation(glm::vec3(0.0f, rotation * 2.0f, 0.0f));
@@ -328,7 +365,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition (100, 100);
 	std::string windowtitle = std::string(PROJECT_NAME)+"-"+std::string(GROUP_NUM)+"-"+std::string(LAST_EDIT_DATE)+"-"+std::string(LAST_EDITOR)+"-"+std::string(argv[0]);
 	//glutCreateWindow (argv[0]);
-	glutCreateWindow("Simple Doom Game");//windowtitle.c_str());
+	glutCreateWindow(windowtitle.c_str());
 	glewInit();
 	dumpInfo ();
 	init ();
@@ -340,8 +377,6 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ARB_debug_output);
 	//glDebugMessageCallbackARB(MessageCallback, 0);
-
-	gun = new Model(&shader, "models/m16_1.obj", "models/");
 	
 	fprintf(stderr, "Scene %p\n", &scene);
 	fprintf(stderr, "Shader: %p\n", &shader);
@@ -349,10 +384,30 @@ int main(int argc, char** argv)
 	ground = new Model(&shader, "models/plane.obj"); // Loads the plane model for the ground
 	sphere = new Model(&shader, "models/sphere.obj"); // !!! Used temporarily as our "head" until we have a character model
 	cube = new Model(&shader, "models/unitcube.obj", "models/");
+
+	wall1 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall2 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall3 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall4 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall5 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall6 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall7 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall8 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall9 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall10 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall11 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall12 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall13 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall14 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall15 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall16 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall17 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall18 = new Model(&shader, "models/unitcube.obj", "models/");
+	wall19 = new Model(&shader, "models/unitcube.obj", "models/");
+
 	//obamium = new Model(&shader, "models/obamium.obj");
 	obamium = new Model(&shader, "models/obamid.obj","models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
-
 	//fprintf(stderr, "Cylinder:%p,Plane:%p,Sphere:%p,Cube:%p\n", cylinder, plane, sphere, cube);
 	cylinder->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -361,7 +416,6 @@ int main(int argc, char** argv)
 	obamium->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	demon->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	cylinder->setOverrideSpecularMaterial(glm::vec4(0.5f, 0.5f, 0.0f, 0.3f));
-
 	cylOb = new GObject(cylinder);
 	planOb = new GObject(ground);
 	sphOb = new GObject(sphere);
