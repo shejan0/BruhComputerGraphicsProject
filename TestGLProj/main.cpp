@@ -1,8 +1,8 @@
 
 #define PROJECT_NAME "Final Project for CS 4383 Quarles-Spring 2021"
 #define GROUP_NUM "Group 42"
-#define LAST_EDIT_DATE "4/14/21 4:05PM"
-#define LAST_EDITOR "Shejan Shuza"
+#define LAST_EDIT_DATE "5/8/21 4:00AM"
+#define LAST_EDITOR "Gabe Vidaurri"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -35,9 +35,6 @@
  *    Tyler Everett
  *    Christopher Urista
  * Description: Defines the main() for the program and acts as controller for many core elements.
- *
- *
- * 
  *
  */
 
@@ -215,11 +212,35 @@ void keyboard(unsigned char key, int x, int y)
 		isFirstPersonCamera = true;
 	}
 
+	glm::vec3 x1 = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), center - eye));
+
 	// Activates each case depending on which key on the keyboard is pressed
 	switch (key) 
 	{
 		case 27: // This is an ASCII value respresenting the ESC key
 			exit(0);
+			break;
+
+		case 'q': // Strafes left
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+
+			// Updates the model matrix of our character to strafe to the left
+			modelMatrix = glm::translate(1.0f, 0.0f, 0.0f) * modelMatrix;
+			break;
+
+		case 'e': // Strafes right
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+
+			// Updates the model matrix of our character to strafe to the right
+			modelMatrix = glm::translate(-1.0f, 0.0f, 0.0f) * modelMatrix;
 			break;
 
 		case 'w': // Moves our character forward
