@@ -341,7 +341,7 @@ int main(int argc, char** argv)
 	glEnable(GL_ARB_debug_output);
 	//glDebugMessageCallbackARB(MessageCallback, 0);
 
-	//gun = new Model(&shader, "models/m16_1.obj", "models/");
+	gun = new Model(&shader, "models/m16_1.obj", "models/");
 	
 	fprintf(stderr, "Scene %p\n", &scene);
 	fprintf(stderr, "Shader: %p\n", &shader);
